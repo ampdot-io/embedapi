@@ -1,4 +1,6 @@
 import io
+import json
+import time
 
 import requests
 import numpy as np
@@ -32,12 +34,23 @@ def _openai_encode_batch(transformer: str, data: list[str]) -> np.array:
     import openai
     assert transformer.startswith('text-embedding')
     result = []
-    for chunk in more_itertools.chunked(data, 1000):
-        response = openai.Embedding.create(
-            model=transformer,
-            input=chunk
-        )
-        result.extend(response['data'])
+    # possible alternative: vary by token count
+    for chunk in more_itertools.chunked(data, 493):  # 493 = e ** 6
+        for retry in range(6):
+            try:
+                response = openai.Embedding.create(
+                    model=transformer,
+                    input=chunk
+                )
+            except (json.decoder.JSONDecodeError, openai.error.APIConnectionError) as e:
+                time.sleep(2 ** (retry - 1))
+            except openai.error.RateLimitError as e:
+                time.sleep(2 ** (retry - 1))
+            else:
+                result.extend(response['data'])
+                break
+        else:
+            raise e
     return np.array([obj["embedding"] for obj in result], dtype=np.float32)
 
 
