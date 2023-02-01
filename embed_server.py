@@ -20,7 +20,12 @@ class EncodeRequest(BaseModel):
 app = FastAPI()
 
 transformer = 'sentence-transformers/all-mpnet-base-v2'
-model = SentenceTransformer(transformer)
+try:
+    model = SentenceTransformer(transformer)
+except Exception as exc:
+    import traceback
+    traceback.print_tb(exc)
+    model = SentenceTransformer(transformer, device='cpu');
 
 
 def yield_from_file(file):
@@ -29,6 +34,7 @@ def yield_from_file(file):
 
 # todo: better cache
 encode = lru_cache(lambda x: model.encode(x))
+encode('hi')
 
 
 @app.post(f"/{transformer}")
