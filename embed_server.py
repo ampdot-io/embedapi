@@ -27,6 +27,7 @@ except Exception as exc:
     traceback.print_tb(exc)
     model = SentenceTransformer(transformer, device='cpu');
 
+print('device: ', model.device)
 
 def yield_from_file(file):
     # yield from file will not wor
