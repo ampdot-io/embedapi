@@ -35,6 +35,7 @@ def _openai_encode_batch(transformer: str, data: list[str]) -> np.array:
     assert transformer.startswith('text-embedding')
     result = []
     # possible alternative: vary by token count
+    # https://github.com/openai/openai-cookbook/blob/main/examples/api_request_parallel_processor.py
     for chunk in more_itertools.chunked(data, 493):  # 493 = e ** 6
         for retry in range(6):
             try:
