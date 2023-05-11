@@ -1,6 +1,7 @@
 import io
 import json
 import time
+from typing import List
 
 import requests
 import numpy as np
@@ -13,13 +14,13 @@ def encode_one(transformer: str, datum: str) -> np.array:
     assert isinstance(datum, str)
     return encode_batch(transformer, [datum])[0]
 
-def encode_batch(transformer: str, data: list[str]) -> np.array:
+def encode_batch(transformer: str, data: List[str]) -> np.array:
     if is_openai_model(transformer):
         return _openai_encode_batch(transformer, data)
     else:
         return _local_encode_batch(transformer, data)
 
-def _local_encode_batch(transformer: str, data: list[str]) -> np.array:
+def _local_encode_batch(transformer: str, data: List[str]) -> np.array:
     response = requests.post(
         base_url.format(transformer),
         json={"input": data}
@@ -30,7 +31,7 @@ def _local_encode_batch(transformer: str, data: list[str]) -> np.array:
     return data
 
 
-def _openai_encode_batch(transformer: str, data: list[str]) -> np.array:
+def _openai_encode_batch(transformer: str, data: List[str]) -> np.array:
     import openai
     assert transformer.startswith('text-embedding')
     result = []
