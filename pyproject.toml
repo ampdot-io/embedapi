@@ -4,13 +4,10 @@ build-backend = "hatchling.build"
 
 [project]
 name = "embedapi"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
     "requests",
     "numpy",
     "more_itertools",
     "openai",
-    "fastapi",
-    "sentence_transformers",
-    "uvicorn[standard]",
 ]
