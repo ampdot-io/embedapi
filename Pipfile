@@ -8,6 +8,9 @@ requests = "*"
 numpy = "*"
 more-itertools = "*"
 openai = "*"
+tiktoken = "*"
+intermodel = {path = "./../../intermodel"}
+httpx = "*"
 
 [dev-packages]
 black = "*"
