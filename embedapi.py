@@ -60,7 +60,10 @@ def _openai_encode_batch(transformer: str, data: List[str]) -> np.array:
     import openai
 
     assert transformer.startswith("text-embedding")
-    encoding = tiktoken.encoding_for_model(transformer)
+    if transformer.startswith('text-embedding-3'):
+        encoding = tiktoken.get_encoding('cl100k_base')
+    else:
+        encoding = tiktoken.encoding_for_model(transformer)
     result = []
     # possible alternative: vary by token count
     # https://github.com/openai/openai-cookbook/blob/main/examples/api_request_parallel_processor.py
@@ -86,6 +89,9 @@ def _openai_encode_batch(transformer: str, data: List[str]) -> np.array:
 def is_openai_model(s):
     return (
         "ada" in s or "babbage" in s or "curie" in s or "cushman" in s or "davinci" in s
+    ) or s in (
+        "text-embedding-3-small",
+        "text-embedding-3-large",
     )
 
 
