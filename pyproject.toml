@@ -11,3 +11,6 @@ dependencies = [
     "more_itertools",
     "openai",
 ]
+
+[tools.poetry]
+name = "embedapi"
