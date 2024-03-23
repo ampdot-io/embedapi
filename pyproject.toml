@@ -12,5 +12,5 @@ dependencies = [
     "openai",
 ]
 
-[tools.poetry]
+[tool.poetry]
 name = "embedapi"

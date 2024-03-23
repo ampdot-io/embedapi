@@ -9,7 +9,7 @@ import numpy as np
 import more_itertools
 from intermodel import callgpt
 
-base_url = "http://localhost:7000/{}"
+base_url = "http://localhost:6009/{}"
 
 
 # todo: nptyping
