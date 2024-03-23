@@ -2,15 +2,23 @@
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[project]
-name = "embedapi"
-version = "0.0.12"
-dependencies = [
-    "requests",
-    "numpy",
-    "more_itertools",
-    "openai",
-]
-
 [tool.poetry]
 name = "embedapi"
+version = "0.0.12"
+description = ""
+authors = ["Your Name <example@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+requests = "*"
+numpy = "*"
+more-itertools = "*"
+openai = "*"
+tiktoken = "*"
+intermodel = {path = "./../../intermodel"}
+httpx = "*"
+
+[tool.poetry.group.dev.dependencies]
+black = "*"
+
