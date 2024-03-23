@@ -1,3 +1,7 @@
+[project]
+name = "embedapi"
+version = "0.0.12"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
