@@ -5,11 +5,12 @@ from typing import List
 
 import requests
 import tiktoken
+import os
 import numpy as np
 import more_itertools
 from intermodel import callgpt
 
-base_url = "http://localhost:6009/{}"
+base_url = os.environ.get("EMBED_SERVER_URL", "http://localhost:6009") + "/{}"
 
 
 # todo: nptyping
@@ -35,20 +36,22 @@ def encode_passages(transformer: str, data: List[str]) -> np.array:
     if is_openai_model(transformer):
         return _openai_encode_batch(transformer, data)
     else:
-        if 'e5-' in transformer and not transformer.endswith(':symmetric'):
+        if "e5-" in transformer and not transformer.endswith(":symmetric"):
             for i in range(len(data)):
-                data[i] = 'passage: ' + data[i]
+                data[i] = "passage: " + data[i]
         return _local_encode_batch(transformer, data)
+
 
 def removesuffix(self: str, suffix: str, /) -> str:
     # suffix='' should not call self[:-0].
     if suffix and self.endswith(suffix):
-        return self[:-len(suffix)]
+        return self[: -len(suffix)]
     else:
         return self[:]
 
+
 def _local_encode_batch(transformer: str, data: List[str]) -> np.array:
-    transformer = removesuffix(transformer, ':symmetric')
+    transformer = removesuffix(transformer, ":symmetric")
     response = requests.post(base_url.format(transformer), json={"input": data})
     response.raise_for_status()
     virt_file = io.BytesIO(response.content)
@@ -60,8 +63,8 @@ def _openai_encode_batch(transformer: str, data: List[str]) -> np.array:
     import openai
 
     assert transformer.startswith("text-embedding")
-    if transformer.startswith('text-embedding-3'):
-        encoding = tiktoken.get_encoding('cl100k_base')
+    if transformer.startswith("text-embedding-3"):
+        encoding = tiktoken.get_encoding("cl100k_base")
     else:
         encoding = tiktoken.encoding_for_model(transformer)
     result = []
@@ -70,10 +73,16 @@ def _openai_encode_batch(transformer: str, data: List[str]) -> np.array:
     for chunk in more_itertools.chunked(data, 148):  # 493 = e ** 6
         truncated_chunk = []
         for item in chunk:
-            truncated_chunk.append(encoding.decode(encoding.encode(item)[:callgpt.max_token_length(transformer)]))
+            truncated_chunk.append(
+                encoding.decode(
+                    encoding.encode(item)[: callgpt.max_token_length(transformer)]
+                )
+            )
         for retry in range(6):
             try:
-                response = openai.Embedding.create(model=transformer, input=truncated_chunk)
+                response = openai.Embedding.create(
+                    model=transformer, input=truncated_chunk
+                )
             except (json.decoder.JSONDecodeError, openai.error.APIConnectionError) as e:
                 time.sleep(2 ** (retry - 1))
             except openai.error.RateLimitError as e:
