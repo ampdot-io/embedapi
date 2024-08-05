@@ -8,7 +8,7 @@ build-backend = "hatchling.build"
 
 [tool.poetry]
 name = "embedapi"
-version = "0.0.12"
+version = "0.0.13"
 description = ""
 authors = ["Your Name <example@example.com>"]
 readme = "README.md"
