@@ -1,6 +1,6 @@
 [project]
 name = "embedapi"
-version = "0.0.12"
+version = "0.0.13"
 
 [build-system]
 requires = ["hatchling"]
