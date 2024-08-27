@@ -20,7 +20,7 @@ numpy = "*"
 more-itertools = "*"
 openai = "*"
 tiktoken = "*"
-intermodel = {path = "./../../intermodel"}
+intermodel = {git = "https://github.com/ampdot-io/intermodel"}
 httpx = "*"
 
 [tool.poetry.group.dev.dependencies]
